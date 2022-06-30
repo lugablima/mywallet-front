@@ -1,15 +1,37 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { ThreeDots } from "react-loader-spinner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import validateEmail from "../functions/validateEmail";
+import axios from "axios";
+import UserContext from "../contexts/UserContext";
 
 export default function SignInPage() {
   const [inputs, setInputs] = useState({ email: "", password: "" });
   const [isDisabled, setIsDisable] = useState(false);
+  const { API, setToken } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  function handleForm(e) {
+  async function handleForm(e) {
     e.preventDefault();
-    setIsDisable(true);
+    if (validateEmail(inputs.email)) {
+      setIsDisable(true);
+
+      const body = {
+        email: inputs.email,
+        password: inputs.password,
+      };
+
+      try {
+        const tokenUser = await axios.post(`${API}/sign-in`, body);
+
+        setToken(tokenUser);
+        navigate("/extract");
+      } catch (error) {
+        alert(error.response.data.message);
+        setIsDisable(false);
+      }
+    } else alert("E-mail inválido, tente novamente!");
   }
 
   return (
@@ -36,7 +58,7 @@ export default function SignInPage() {
           {isDisabled ? <ThreeDots color="#ffffff" width={51} height={51} /> : "Entrar"}
         </button>
       </form>
-      <Link to="/cadastro">
+      <Link to="/cadastro" style={{ pointerEvents: isDisabled ? "none" : "" }}>
         <h6>Primeira vez? Cadastre-se!</h6>
       </Link>
     </Container>
@@ -100,6 +122,9 @@ const Container = styled.div`
     font: 700 20px/23px "Raleway", sans-serif;
     color: #fff;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   button:disabled {
