@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useContext } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
-import validateEmail from "../functions/validateEmail";
+import isValidEmail from "../functions/isValidEmail";
 import axios from "axios";
 import UserContext from "../contexts/UserContext";
 
@@ -14,24 +14,27 @@ export default function SignInPage() {
 
   async function handleForm(e) {
     e.preventDefault();
-    if (validateEmail(inputs.email)) {
-      setIsDisable(true);
 
-      const body = {
-        email: inputs.email,
-        password: inputs.password,
-      };
+    for (const prop in inputs) inputs[prop] = inputs[prop].trim();
 
-      try {
-        const tokenUser = await axios.post(`${API}/sign-in`, body);
+    if (!isValidEmail(inputs.email)) return alert("E-mail inválido, tente novamente!");
 
-        setToken(tokenUser);
-        navigate("/extract");
-      } catch (error) {
-        alert(error.response.data.message);
-        setIsDisable(false);
-      }
-    } else alert("E-mail inválido, tente novamente!");
+    setIsDisable(true);
+
+    const body = {
+      email: inputs.email,
+      password: inputs.password,
+    };
+
+    try {
+      const tokenUser = await axios.post(`${API}/sign-in`, body);
+
+      setToken(tokenUser);
+      navigate("/extract");
+    } catch (error) {
+      alert(error.response.data.message);
+      setIsDisable(false);
+    }
   }
 
   return (
