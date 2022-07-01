@@ -9,7 +9,7 @@ import UserContext from "../contexts/UserContext";
 export default function SignInPage() {
   const [inputs, setInputs] = useState({ email: "", password: "" });
   const [isDisabled, setIsDisable] = useState(false);
-  const { API, setToken } = useContext(UserContext);
+  const { API, setUserInfos } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function handleForm(e) {
@@ -27,10 +27,11 @@ export default function SignInPage() {
     };
 
     try {
-      const tokenUser = await axios.post(`${API}/sign-in`, body);
+      const userInfos = await axios.post(`${API}/sign-in`, body);
 
-      setToken(tokenUser);
-      navigate("/extract");
+      setUserInfos(userInfos);
+
+      navigate("/extrato");
     } catch (error) {
       alert(error.response.data.message);
       setIsDisable(false);

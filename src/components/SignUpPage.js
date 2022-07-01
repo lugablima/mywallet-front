@@ -36,7 +36,7 @@ export default function SignUpPage() {
     try {
       await axios.post(`${API}/sign-up`, body);
 
-      navigate("/extract");
+      navigate("/");
     } catch (error) {
       alert(error.response.data.message);
       setIsDisable(false);

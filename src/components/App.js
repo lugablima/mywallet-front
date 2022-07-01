@@ -9,13 +9,13 @@ import UserContext from "../contexts/UserContext";
 
 export default function App() {
   const API = "http://localhost:5000";
-  const [token, setToken] = useState("");
+  const [userInfos, setUserInfos] = useState({ name: "", token: "" });
 
   return (
     <>
       <GlobalStyle />
       <BrowserRouter>
-        <UserContext.Provider value={{ API, token, setToken }}>
+        <UserContext.Provider value={{ API, userInfos, setUserInfos }}>
           <Routes>
             <Route path="/" element={<SignInPage />} />
             <Route path="/cadastro" element={<SignUpPage />} />
