@@ -1,10 +1,19 @@
 import styled from "styled-components";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../contexts/UserContext";
+import axios from "axios";
+// import calculateBalance from "../functions/calculateBalance";
 
-function ExtractFooter() {
+function ExtractFooter({ extract }) {
+  //   const balance = calculateBalance(extract);
+  const balance = -100.0;
+  //lembrar de trocar o ponto por vírgula no número
+
   return (
-    <ContainerExtractFooter>
+    <ContainerExtractFooter balance={balance}>
       <span>SALDO</span>
       <span>2849,96</span>
+      {/* <span>{balance}</span> */}
     </ContainerExtractFooter>
   );
 }
@@ -20,7 +29,32 @@ function Transaction({ transaction: { date, type, description, price } }) {
 }
 
 export default function ExtractsContainer() {
+  // eslint-disable-next-line
+  const [extract, setExtract] = useState(null);
+  const { API, token } = useContext(UserContext);
   const transaction = { date: "30/11", type: "saída", description: "Almoço mãe", price: "39,90" };
+  //lembrar de apagar transaction depois
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    async function getExtract() {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const newExtract = await axios.get(`${API}/extract`, config);
+
+        setExtract(newExtract);
+      } catch (error) {
+        alert(error.response);
+      }
+    }
+
+    // getExtract();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
@@ -28,7 +62,8 @@ export default function ExtractsContainer() {
       <Transaction transaction={transaction} />
       <Transaction transaction={transaction} />
       <ExtractFooter />
-      {/* <h5>Não há registros de entrada ou saída</h5> */}
+      {/* {extract ? extract.map(extract => <Transaction transaction={extract} />) : <h5>Não há registros de entrada ou saída</h5>} */}
+      {/* <ExtractFooter extract={extract} /> */}
     </Container>
   );
 }
@@ -96,7 +131,6 @@ const ContainerExtractFooter = styled.div`
 
   span:last-child {
     font-weight: 400;
-    color: #03ac00;
-    //falta colocar uma prop caso o valor seja negativo
+    color: ${(prop) => (prop.balance >= 0 ? "#03ac00" : "#C70000")};
   }
 `;
