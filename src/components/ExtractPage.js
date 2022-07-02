@@ -8,8 +8,10 @@ import { IoIosRemoveCircleOutline } from "react-icons/io";
 import ExtractsContainer from "./ExtractsContainer";
 
 function OptionsBox({ text, icon }) {
+  const navigate = useNavigate();
+
   return (
-    <ContainerBox>
+    <ContainerBox onClick={() => navigate("/registro", { state: { type: text } })}>
       {icon === "add" ? <IoAddCircleOutline /> : <IoIosRemoveCircleOutline />}
       <h6>Nova {text}</h6>
     </ContainerBox>
