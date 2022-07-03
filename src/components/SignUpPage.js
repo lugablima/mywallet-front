@@ -38,7 +38,7 @@ export default function SignUpPage() {
 
       navigate("/");
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response.data);
       setIsDisable(false);
     }
   }

@@ -2,41 +2,37 @@ import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
 import UserContext from "../contexts/UserContext";
 import axios from "axios";
-// import calculateBalance from "../functions/calculateBalance";
+import calculateBalance from "../functions/calculateBalance";
 
 function ExtractFooter({ extract }) {
-  //   const balance = calculateBalance(extract);
-  const balance = -100.0;
-  //lembrar de trocar o ponto por vírgula no número
+  const balance = calculateBalance(extract);
 
   return (
     <ContainerExtractFooter balance={balance}>
       <span>SALDO</span>
-      <span>2849,96</span>
-      {/* <span>{balance}</span> */}
+      <span>{balance.toFixed(2).replace(".", ",")}</span>
     </ContainerExtractFooter>
   );
 }
 
-function Transaction({ transaction: { date, type, description, price } }) {
+function Transaction({ transaction: { date, type, description, amount } }) {
   return (
     <ContainerTransaction type={type}>
       <p>
-        <span>{date}</span> {description} <span>{price}</span>
+        <span>{date}</span> {description} <span>{amount.replace(".", ",")}</span>
       </p>
     </ContainerTransaction>
   );
 }
 
 export default function ExtractsContainer() {
-  // eslint-disable-next-line
-  const [extract, setExtract] = useState(null);
-  const { API, token } = useContext(UserContext);
-  const transaction = { date: "30/11", type: "saída", description: "Almoço mãe", price: "39,90" };
-  //lembrar de apagar transaction depois
+  const [extract, setExtract] = useState([]);
+  const {
+    API,
+    userInfos: { token },
+  } = useContext(UserContext);
 
   useEffect(() => {
-    // eslint-disable-next-line
     async function getExtract() {
       const config = {
         headers: {
@@ -44,26 +40,26 @@ export default function ExtractsContainer() {
         },
       };
       try {
-        const newExtract = await axios.get(`${API}/extract`, config);
+        const res = await axios.get(`${API}/extract`, config);
 
-        setExtract(newExtract);
+        setExtract(res.data);
       } catch (error) {
         alert(error.response);
       }
     }
 
-    // getExtract();
+    getExtract();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Container>
-      <Transaction transaction={transaction} />
-      <Transaction transaction={transaction} />
-      <Transaction transaction={transaction} />
-      <ExtractFooter />
-      {/* {extract ? extract.map(extract => <Transaction transaction={extract} />) : <h5>Não há registros de entrada ou saída</h5>} */}
-      {/* <ExtractFooter extract={extract} /> */}
+      {extract.length !== 0 ? (
+        extract.map((extract, index) => <Transaction key={index} transaction={extract} />)
+      ) : (
+        <h5>Não há registros de entrada ou saída</h5>
+      )}
+      {extract.length !== 0 ? <ExtractFooter extract={extract} /> : ""}
     </Container>
   );
 }
@@ -122,6 +118,7 @@ const ContainerExtractFooter = styled.div`
   bottom: 10px;
   right: 11px;
   left: 12px;
+  z-index: 1;
   font: 17px/20px "Raleway", sans-serif;
 
   span:first-child {

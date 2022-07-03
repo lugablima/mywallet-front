@@ -27,9 +27,9 @@ export default function SignInPage() {
     };
 
     try {
-      const userInfos = await axios.post(`${API}/sign-in`, body);
+      const res = await axios.post(`${API}/sign-in`, body);
 
-      setUserInfos(userInfos);
+      setUserInfos(res.data);
 
       navigate("/extrato");
     } catch (error) {

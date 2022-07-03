@@ -12,7 +12,10 @@ export default function TransactionPage() {
   const type = location.state.type;
   const [inputs, setInputs] = useState({ amount: "", description: "" });
   const [isDisabled, setIsDisable] = useState(false);
-  const { API, token } = useContext(UserContext);
+  const {
+    API,
+    userInfos: { token },
+  } = useContext(UserContext);
 
   async function handleForm(e) {
     e.preventDefault();
@@ -26,7 +29,7 @@ export default function TransactionPage() {
     setIsDisable(true);
 
     const body = {
-      amount: inputs.amount,
+      amount: inputs.amount.replace(",", "."),
       description: inputs.description,
       type,
     };
