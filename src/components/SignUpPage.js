@@ -36,9 +36,12 @@ export default function SignUpPage() {
     try {
       await axios.post(`${API}/sign-up`, body);
 
+      alert("Usuário criado com sucesso!");
+
       navigate("/");
     } catch (error) {
-      alert(error.response.data);
+      if (error.response.status === 409) alert("Já existe um usuário cadastrado com o email informado, insira outro!");
+      else if (error.response.status === 500) alert("Erro interno no servidor, tente novamente mais tarde!");
       setIsDisable(false);
     }
   }

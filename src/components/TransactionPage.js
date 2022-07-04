@@ -45,7 +45,9 @@ export default function TransactionPage() {
 
       navigate("/extrato");
     } catch (error) {
-      alert(error.response.data.message);
+      if (error.response.status === 401) alert("Erro de autenticação, tente novamente mais tarde!");
+      else if (error.response.status === 422) alert("Os dados informados estão no formato incorreto, tente novamente!");
+      else if (error.response.status === 500) alert("Erro interno no servidor, tente novamente mais tarde!");
       setIsDisable(false);
     }
   }

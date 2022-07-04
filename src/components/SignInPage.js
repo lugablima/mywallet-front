@@ -33,7 +33,8 @@ export default function SignInPage() {
 
       navigate("/extrato");
     } catch (error) {
-      alert(error.response.data.message);
+      if (error.response.status === 401) alert(error.response.data);
+      else if (error.response.status === 500) alert("Erro interno no servidor, tente novamente mais tarde!");
       setIsDisable(false);
     }
   }

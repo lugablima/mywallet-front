@@ -44,7 +44,8 @@ export default function ExtractsContainer() {
 
         setExtract(res.data);
       } catch (error) {
-        alert(error.response);
+        if (error.response.status === 401) alert("Erro de autenticação, tente novamente mais tarde!");
+        else if (error.response.status === 500) alert("Erro interno no servidor, tente novamente mais tarde!");
       }
     }
 
