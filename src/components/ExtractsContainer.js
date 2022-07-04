@@ -118,7 +118,7 @@ const ContainerExtractFooter = styled.div`
   bottom: 10px;
   right: 11px;
   left: 12px;
-  z-index: 1;
+  /* z-index: 1; */
   font: 17px/20px "Raleway", sans-serif;
 
   span:first-child {
