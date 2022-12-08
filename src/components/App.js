@@ -8,7 +8,7 @@ import TransactionPage from "./TransactionPage";
 import UserContext from "../contexts/UserContext";
 
 export default function App() {
-  const API = "https://back-project-my-wallet.herokuapp.com";
+  const API = process.env.REACT_APP_API_BASE_URL;
   const [userInfos, setUserInfos] = useState({ name: "", token: "" });
 
   return (
